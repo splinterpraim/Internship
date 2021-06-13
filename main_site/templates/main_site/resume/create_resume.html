@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Resume{% endblock %}
+{% block content %}
+<div class="form-outside">
+	<h2 class="form-head">Новое резюме</h2>
+	<div class="form-middleside">
+
+	<form method="post">{% csrf_token %}
+	    {{ form.as_p }}
+	    <input type="submit" value="Save">
+	</form>
+	</div>
+</div>
+{% endblock %}

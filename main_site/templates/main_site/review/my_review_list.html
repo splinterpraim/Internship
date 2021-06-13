@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои отзывы{% endblock %}
+{% block content %}
+<h1>Мои отзывы</h1>
+<div style="">
+	{% if not reviews  %}
+	<span style="color: #000; margin-left: 25%; margin-right: 20px; font-size: 25px">У вас еще нет отзывов! --></span>
+	<a href="{% url 'create_review' %}">Создать отзывы</a>
+	{% endif %}
+	<ul>
+	{% for review in reviews %}
+		<li style="list-style-type: none;">
+			<div class="row mb p-3 profile-info-top" style="width: 50%; margin-left: 25%">
+				<a href="{% url 'my_review_detail' review.id %}" style="font-size: 25px">{{review.company}}</a>
+				<p style="font-size: 15px"><i>создано {{review.created_by}}</i></p>
+				
+				<!-- {% if resume.status == 'published' %}
+				<span style="color: #a757f7">Опубликованно</span>
+				<p>Видно всем работодателям <a href="">прямая ссылка</a></p>
+				{% else %}
+				<span style="color: #ff7575">Неопубликованно</span>
+				<p>Не видно никому <a href="{ url 'my_resume_make_published' resume.id 1 }" class="button-mini">Сделать видимым</a></p>
+				{% endif %} -->
+
+			</div>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}

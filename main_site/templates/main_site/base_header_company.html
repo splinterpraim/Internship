@@ -1,0 +1,39 @@
+
+<span class="logo">Site</span>
+<ul class="menu" >
+	<li {% if section == "e" %} class="selected" {% endif %}>
+		<a href="{% url 'profile' %}">Поиск резюме</a>
+	</li>
+				
+	<li {% if section == "my_vacancy_list" %} class="selected" {% endif %}>
+		<a href="{% url 'my_vacancy_list' %}">Мои вакансии</a>
+	</li>
+
+	<li {% if section == "response_list_student" %} class="selected" {% endif %}>
+		<a href="{ url 'response_list_student' }">Отклики</a>
+	</li>
+
+</ul>
+		
+
+<span class="user">
+	<div style="font-size: 16px">Привет, {{request.user.companys.name}}</div> 
+			 
+	<div {% if section == "profile" %} class="selected" {% endif %} style="list-style-type: none">
+		<a href="{% url 'profile' %}">Профиль</a>
+	</div>
+	<a href="{% url 'logout' %}">Выход</a>	
+</span>
+
+
+<div id="right">		
+	<span {% if section == "create_vacancy" %} class="selected-create" {% endif %} >
+		<a href="{% url 'create_vacancy' %}">Создать вакансию</a>
+	</span>
+</div>
+
+		
+		
+	
+
+	

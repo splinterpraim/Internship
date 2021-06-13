@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Мои Вакансии{% endblock %}
+{% block content %}
+<h1>Мои вакансии</h1>
+<div style="">
+	{% if not vacancys  %}
+	<span style="color: #000; margin-left: 25%; margin-right: 20px; font-size: 25px">У вас еще нет вакансий! --></span>
+	<a href="{% url 'create_vacancy' %}">Создать вакансию</a>
+	{% endif %}
+	<ul>
+	{% for vacancy in vacancys %}
+		<li style="list-style-type: none;">
+			<div class="row mb p-3 profile-info-top" style="width: 50%; margin-left: 25%">
+				<a href="{% url 'my_vacancy_detail' vacancy.id %}" style="font-size: 25px">{{vacancy.name}}</a>
+				<p style="font-size: 15px"><i>Обновлено {{vacancy.updated_by}}</i></p>
+				
+				{% if vacancy.status == 'published' %}
+				<span style="color: #a757f7">Опубликованно</span>
+				<p>Видно всем студентам <a href="">прямая ссылка</a></p>
+				{% else %}
+				<span style="color: #ff7575">Неопубликованно</span>
+				<p>Не видно никому <a href="{% url 'my_vacancy_make_published' vacancy.id 1 %}" class="button-mini">Сделать видимым</a></p>
+				{% endif %}
+
+			</div>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}

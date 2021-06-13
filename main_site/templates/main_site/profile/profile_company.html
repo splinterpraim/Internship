@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Мой профиль{% endblock %}
+
+{% block content %}
+	<h1>Профиль <span class="role">({{ user.get_role_display }})</span><br>
+	<a href="{% url 'profile' %}" class="button">Личные данные</a>
+	<a href="" class="button">Предпросмотр</a>
+	</h1>
+	<div style="width: 50%">
+	<div class="container">
+	
+	{% block photo %}
+		{% if photo_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info-top">
+			<div class="col-4 " >Фото</div>
+			<div class="col-6">{{company.photo}}</div>
+			<div class="col"><a href="{% url 'profile_change_photo' %}">изменить</a></div>
+		</div>
+		{% endif %}
+	{% endblock %}
+			
+
+	{% block name %}
+		{% if name_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info-top">
+			<div class="col-4 " >Название</div>
+			<div class="col-6">{{company.name}}</div>
+			<div class="col"><a href="{% url 'profile_change_name' %}">изменить</a></div>
+		</div>
+		{% endif %}
+	{% endblock %}
+
+	{% block username %}
+		{% if username_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info">
+			<div class="col-4 " >Логин</div>
+			<div class="col-6">{{user.username}}</div>
+			<div class="col"><a href="{% url 'profile_change_username' %}">изменить</a></div>
+		</div>
+		{% endif %}
+	{% endblock %}
+		{% block description %}
+		{% if description_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info">
+			<div class="col-4 " >Описание</div>
+			<div class="col-6" style="overflow-x:hidden">{{company.description}}</div>
+			<div class="col"><a href="{% url 'profile_change_description' %}">изменить</a></div>
+		</div>
+		{% endif %}
+		{% endblock %}
+
+		{% if address_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info">
+			<div class="col-4 " >Адрес</div>
+			<div class="col-6">{{company.address}}</div>
+			<div class="col"><a href="{% url 'profile_change_address' %}">изменить</a></div>
+		</div>
+		{% endif %}
+
+		{% if phone_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info">
+			<div class="col-4 " >Телефон</div>
+			<div class="col-6">{{company.phone}}</div>
+			<div class="col"><a href="{% url 'profile_change_phone' %}">изменить</a></div>
+		</div>
+		{% endif %}
+
+		
+		{% if site_name_div %}
+			{% include 'main_site/profile/profile_change_div.html' %}
+		{% else %}
+		<div class="row mb p-3 profile-info">
+			<div class="col-4 " >Сайт</div>
+			<div class="col-6">{{company.site_name}}</div>
+			<div class="col"><a href="{% url 'profile_change_site_name' %}">изменить</a></div>
+		</div>
+		{% endif %}
+
+
+	</div>
+	</div>
+	
+	
+{% endblock %}
+

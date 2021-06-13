@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Вакансия - {{vacancy.name}}{% endblock %}
+{% block content %}
+{% if vacancy.status == 'blocked' %}  
+	<div style="color: #ff7575; margin-left: 25%; font-size: 35px"><--Вакансия заблокированно!--></div>
+{% else %}
+	<div class="row mb p-3 profile-info-top" style="width: 70%; margin-left: 15%"> 
+		<div class="col-8" style="border-right:1px solid">
+			{% if name_div %}
+				{% include 'main_site/vacancy/my_vacancy_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				<span style="font-size: 30px; padding-right: 20px ">{{vacancy.name}}</span>
+				<a href="{% url 'my_vacancy_change_name' vacancy.id %}">изменить</a>
+			</div>
+			{% endif %}
+
+			{% if description_div %}
+				{% include 'main_site/vacancy/my_vacancy_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Описание вакансии</span>
+				<a href="{% url 'my_vacancy_change_description' vacancy.id %}">изменить</a>
+				<div style=" ">{{vacancy.description}}</div>
+			</div>
+			{% endif %}
+
+			{% if responsibilities_div %}
+				{% include 'main_site/vacancy/my_vacancy_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Обязанности</span>
+				<a href="{% url 'my_vacancy_change_responsibilities' vacancy.id %}">изменить</a>
+				<div style=" ">{{vacancy.responsibilities}}</div>
+			</div>
+			{% endif %}
+
+			{% if requirements_div %}
+				{% include 'main_site/vacancy/my_vacancy_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Требования</span>
+				<a href="{% url 'my_vacancy_change_requirements' vacancy.id %}">изменить</a>
+				<div style=" ">{{vacancy.requirements}}</div>
+			</div>
+			{% endif %}
+
+			{% if conditions_div %}
+				{% include 'main_site/vacancy/my_vacancy_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Условия</span>
+				<a href="{% url 'my_vacancy_change_conditions' vacancy.id %}">изменить</a>
+				<div style=" ">{{vacancy.conditions}}</div>
+			</div>
+			{% endif %}
+
+			{% if skills_div %}
+				{% include 'main_site/vacancy/my_vacancy_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Навыки</span>
+				<a href="{% url 'my_vacancy_change_skills' vacancy.id %}">изменить</a>
+				<div style="margin-top: 15px">
+					{% for i in vacancy.skills.all %}
+					<span style="padding: 5px 10px;margin-right: 5px; background: #c7c5c7;">
+						{{i.name}}
+					</span>
+					{% endfor %}
+
+				</div>
+			</div>
+			{% endif %}
+
+		</div>
+
+
+
+		<div class="col-4">
+			<div class="" style="margin-bottom: 30px">
+				
+				<div style="font-size: 20px; color: #000; padding-right: 20px; ">
+					Видимость вакансии
+				</div>
+
+				{% if vacancy.status == 'published' %}
+					<span style="color: #a757f7">Опубликована</span>
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Сейчас эта вакансия видна всем студентам
+					</div>
+					<a href="{% url 'my_vacancy_make_closed' vacancy.id  %}" class="button-mini">Скрыть вакансию</a>
+				{% elif vacancy.status == 'closed' %}
+					<span style="color: #ff7575">Неопубликована</span>
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Сейчас эта вакансия не видна никому
+					</div>
+					<a href="{% url 'my_vacancy_make_published' vacancy.id 0 %}" class="button-mini">Сделать видимой</a>
+				{% endif %}
+					
+				<div style="margin-top: 20px">
+					<div style="font-size: 20px; color: #000; padding-right: 20px; ">
+						Действия
+					</div>
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Вы можете удалить вакансию кликнув по кнопке
+					</div>
+					<a href="{% url 'my_vacancy_delete' vacancy.id %}" class="button-mini" style="background-color: #f23558">Удалить</a>
+				</div>
+
+			</div>
+
+			
+		</div>
+
+			
+	</div>
+
+	
+	
+	
+{% endif %}
+
+{% endblock %}

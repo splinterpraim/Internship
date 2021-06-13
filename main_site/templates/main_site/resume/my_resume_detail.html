@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Резюме - {{resume.name}}{% endblock %}
+{% block content %}
+{% if resume.status == 'blocked' %}
+	<div style="color: #ff7575; margin-left: 25%; font-size: 35px"><--Резюме заблокированно!--></div>
+{% else %}
+<!-- <div class="row mb p-3 profile-info-top" style="width: 70%; margin-left: 15%"> -->
+	<div class="row mb p-3 profile-info-top" style="width: 70%; margin-left: 15%"> <!-- profile-info-top -->
+		<div class="col-8" style="border-right:1px solid">
+			{% if name_div %}
+				{% include 'main_site/resume/my_resume_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				<span style="font-size: 30px; padding-right: 20px ">{{resume.name}}</span>
+				<a href="{% url 'my_resume_change_name' resume.id %}">изменить</a>
+			</div>
+			{% endif %}
+
+			{% if experience_div %}
+				{% include 'main_site/resume/my_resume_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Опыт работы</span>
+				<a href="{% url 'my_resume_change_experience' resume.id %}">изменить</a>
+				<div style=" ">{{resume.experience}}</div>
+			</div>
+			{% endif %}
+
+			{% if responsibilities_div %}
+				{% include 'main_site/resume/my_resume_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Обязанности</span>
+				<a href="{% url 'my_resume_change_responsibilities' resume.id %}">изменить</a>
+				<div style=" ">{{resume.responsibilities}}</div>
+			</div>
+			{% endif %}
+
+			{% if achievements_div %}
+				{% include 'main_site/resume/my_resume_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Достижения</span>
+				<a href="{% url 'my_resume_change_achievements' resume.id %}">изменить</a>
+				<div style=" ">{{resume.achievements}}</div>
+			</div>
+			{% endif %}
+
+			{% if skills_div %}
+				{% include 'main_site/resume/my_resume_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Навыки</span>
+				<a href="{% url 'my_resume_change_skills' resume.id %}">изменить</a>
+				<div style="margin-top: 15px">
+					{% for i in resume.skills.all %}
+					<span style="padding: 5px 10px;margin-right: 5px; background: #c7c5c7;">
+						{{i.name}}
+					</span>
+					{% endfor %}
+
+				</div>
+			</div>
+			{% endif %}
+
+			{% if about_self_div %}
+				{% include 'main_site/resume/my_resume_change_div.html' %}
+			{% else %}
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">О себе</span>
+				<a href="{% url 'my_resume_change_about_self' resume.id %}">изменить</a>
+				<div style=" ">{{resume.about_self}}</div>
+			</div>
+			{% endif %}
+		</div>
+		<div class="col-4">
+			<div class="" style="margin-bottom: 30px">
+				
+				<div style="font-size: 20px; color: #000; padding-right: 20px; ">
+					Видимость резюме
+				</div>
+
+				{% if resume.status == 'published' %}
+					<span style="color: #a757f7">Опубликовано</span>
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Сейчас это резюме видно всем работодателям
+					</div>
+					<a href="{% url 'my_resume_make_closed' resume.id  %}" class="button-mini">Скрыть резюме</a>
+				{% elif resume.status == 'closed' %}
+					<span style="color: #ff7575">Неопубликовано</span>
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Сейчас это резюме не видно никому
+					</div>
+					<a href="{% url 'my_resume_make_published' resume.id 0 %}" class="button-mini">Сделать видимым</a>
+				{% endif %}
+					
+				<div style="margin-top: 20px">
+					<div style="font-size: 20px; color: #000; padding-right: 20px; ">
+						Действия
+					</div>
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Вы можете удалить резюме кликнув по кнопке
+					</div>
+					<a href="{% url 'my_resume_delete' resume.id %}" class="button-mini" style="background-color: #f23558">Удалить</a>
+				</div>
+
+			</div>
+
+			
+		</div>
+
+			
+	</div>
+
+	
+	
+	
+{% endif %}
+<!-- </div> -->
+{% endblock %}

@@ -1,0 +1,15 @@
+
+	<div class="row mb p-3 profile-info-change">
+		{{error}}
+		<form action="", method="post">
+			{% csrf_token %}
+			{{form.as_p}}
+			<button class="button" type="submit">сохранить</button> 
+			<a   href="{% url 'profile' %}" class="cancel">отменить</a>
+		</form>	
+	</div>
+	
+
+
+
+

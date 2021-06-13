@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзыв - {{review}}{% endblock %}
+{% block content %}
+<div class="row mb p-3 profile-info-top" style="width: 70%; margin-left: 15%"> 
+		<div class="col-8" style="border-right:1px solid">
+
+			<div class="" style="margin-bottom: 30px">
+				<span style="font-size: 30px; padding-right: 20px ">Отзыв на компанию {{review.company}}</span>
+			</div>
+			
+			<div class="" style="margin-bottom: 30px">
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Оценка</span>
+				<div style=" ">{{review.get_mark_display}}</div>
+			</div>
+			
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Текст</span>
+				<div style="overflow-x:hidden">{{review.text}}</div>
+			</div>
+
+
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Дата создания</span>
+				<div style="font-size: 15px"><i>{{review.created_by}}</i></div>
+			</div>
+			
+
+		</div>
+</div>
+
+
+{% endblock %}

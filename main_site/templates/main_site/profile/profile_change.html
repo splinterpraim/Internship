@@ -1,0 +1,22 @@
+{% extends 'main_site/profile/profile.html' %}
+
+
+
+
+{% block username %}
+	{% if username_div %}
+		{% include 'main_site/profile/profile_change_div.html' %}
+	{% else %}
+		{{block.super}}
+	{% endif %}
+{% endblock %}
+
+{% block name %}
+	{% if username_div %}
+		{% include 'main_site/profile/profile_change_div.html' %}
+	{% else %}
+		{{block.super}}
+	{% endif %}
+{% endblock %}
+
+

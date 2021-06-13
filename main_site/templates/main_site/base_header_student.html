@@ -1,0 +1,47 @@
+
+<span class="logo">Site</span>
+<ul class="menu" >
+	<li {% if section == "e" %} class="selected" {% endif %}>
+		<a href="{% url 'profile' %}">Поиск вакансий</a>
+	</li>
+				
+	<li {% if section == "my_resume_list" %} class="selected" {% endif %}>
+		<a href="{% url 'my_resume_list' %}">Мои резюме</a>
+	</li>
+
+	<li {% if section == "my_review_list" %} class="selected" {% endif %}>
+		<a href="{% url 'my_review_list' %}">Мои отзывы</a>
+	</li>
+
+	<li {% if section == "response_list_student" %} class="selected" {% endif %}>
+		<a href="{ url 'response_list_student' }">Отклики</a>
+	</li>
+
+</ul>
+		
+
+<span class="user">
+	<div style="font-size: 16px">Привет, {{request.user.students.name}}</div> 
+			 
+	<div {% if section == "profile" %} class="selected" {% endif %} style="list-style-type: none">
+		<a href="{% url 'profile' %}">Профиль</a>
+	</div>
+	<a href="{% url 'logout' %}">Выход</a>	
+</span>
+
+
+<div id="right">		
+	<span {% if section == "create_resume" %} class="selected-create" {% endif %} >
+		<a href="{% url 'create_resume' %}">Создать резюме</a>
+	</span>
+</div>
+<div id="after-right">		
+	<span {% if section == "create_review" %} class="selected-create" {% endif %} >
+		<a href="{% url 'create_review' %}">Сделать отзыв</a>
+	</span>
+</div>
+		
+		
+	
+
+	

@@ -1,0 +1,19 @@
+student
+	search (vacancy_list_detail//recomend,last view)
+  + profile (show,change)
+  + my resume (list,detail_show_change) 
+  + create resume(create) 
+	response (list,detail)
+  + write review (create)
+  + my review (list,detail_show)
+	show doc (list,detail_download)
+
+company
+	search (resume_list_detail//recomend,last view)
+  + profile (show,change)
+  + my vacancy (list,detail_show_change)
+  + create vacancy(create)
+	response (list,detail_function)
+	show doc (list,detail_download)
+
+
