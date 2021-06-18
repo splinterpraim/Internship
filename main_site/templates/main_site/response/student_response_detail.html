@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+
+{% block title %}{{response.get_status_display}}{% endblock %}
+
+
+{% block content %}
+
+
+	<div class="row mb p-3 profile-info-top" style="width: 70%; margin-left: 15%"> 
+		<div class="col-8" style="border-right:1px solid">
+			<div class="" style="margin-bottom: 30px">
+				
+				{% if response.status == 'offer' %}
+					<span style="color: #a757f7;font-size: 30px; padding-right: 20px ">{{response.get_status_display}}</span>
+						
+					{% elif response.status == 'student_response' %}
+						<span style="color: #40c7be;font-size: 30px; padding-right: 20px ">{{response.get_status_display}}</span>
+						
+					{% elif response.status == 'offer_completed' %}
+					<span style="color: #7c9492;font-size: 30px; padding-right: 20px ">{{response.get_status_display}}</span>
+						
+					{% elif response.status == 'reject' %}
+						<span style="color: #ff7575;font-size: 30px; padding-right: 20px ">{{response.get_status_display}}</span>
+					
+					{% endif %}
+				
+			</div>
+			<div class="" style="margin-bottom: 10px">
+				Вакансия <a href="{% url 'vacancy_detail' response.vacancy.id %}">{{response.vacancy.name}}</a>
+			</div>
+			<div class="" style="margin-bottom: 10px">
+				Резюме <a href="{% url 'my_resume_detail' response.resume.id %}">{{response.resume.name}}</a>
+			</div>
+			<div class="" style="margin-bottom: 30px;font-size: 15px;">
+				<i>дата {{response.updated_by}}</i>
+			</div>
+			<div style="font-size: 20px; color: #636b6b; padding-right: 20px ">Предпросмотр вакансии</div>
+			<div style="border:1px solid #d7dedd; width: 70%;margin-left: 10%;background-color: #fff">
+				
+
+				<div class="" style="margin-bottom: 30px;margin-left:20px; margin-top: 20px;margin-right: 20px">
+		
+					<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Описание</span>
+					
+					<div style=" ">{{response.vacancy.description}}</div>
+				</div>
+				
+				
+				
+				<div class="" style="margin-bottom: 30px;margin-left:20px;margin-right: 20px">
+					
+					<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Требования</span>
+					
+					<div style=" ">{{response.vacancy.requirements}}</div>
+				</div>
+				
+				<div class="" style="margin-bottom: 30px;margin-left:20px;margin-right: 20px">
+					
+					<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Навыки</span>
+					
+					<div style="margin-top: 15px">
+						{% for i in response.vacancy.skills.all %}
+						<span style="padding: 5px 10px;margin-right: 5px; background: #c7c5c7;">
+							{{i.name}}
+						</span>
+						{% endfor %}
+
+					</div>
+				</div>
+				
+			</div>
+
+		</div>
+
+		<div class="col-4">
+			<div class="" style="margin-bottom: 30px">
+					
+				<div style="">
+					<div style="font-size: 20px; color: #000; padding-right: 20px; ">
+						Действия
+					</div>
+
+
+					{% if response.status == 'offer' %}
+						
+						<div style=" margin-bottom: 20px; margin-top: 10px">
+							Обратитесь на кафедру вашего вуза, чтобы узнать о дальнейшем взаимодействии
+						</div>
+						
+					{% elif response.status == 'student_response' %}
+						<div style=" margin-bottom: 20px; margin-top: 20px">
+							Ждите пока компания просмотрит вашу вакансию
+						</div>
+					{% elif response.status == 'offer_completed' %}
+					<div style=" margin-bottom: 20px; margin-top: 20px">
+							Если вы уже прошли или проходите стажировку по этой ваканисии, можете написать отзыв о компании 
+						</div>
+					
+					<a href="{% url 'create_review'  %}" class="button-mini" style="background-color: #a757f7">Сделать отзыв</a>
+						
+					{% elif response.status == 'reject' %}
+						<div style=" margin-bottom: 20px; margin-top: 20px">
+							Не расстраивайтесь!
+							Делайте больше откликов на вакансии,чтобы повысить шансы найти стажировку
+						</div>
+						
+					{% else %}
+					<span style="color: #7c9492;font-size: 25px; padding-right: 20px ">{{response.get_status_display}}</span>
+					{% endif %}
+					
+				</div>
+
+			</div>
+
+			
+		</div>
+
+			
+	</div>
+
+	
+	
+	
+
+<!-- </div> -->
+{% endblock %}

@@ -55,7 +55,7 @@ class ProfileHelp():
 		self.context = context.copy()
 
 	def method_POST(self):
-		self.form = self.form(self.request.POST)
+		self.form = self.form(self.request.POST, self.request.FILES)
 		if self.form.is_valid():
 			self.choise_func(self.form.get_func_name())
 		else:
@@ -126,9 +126,10 @@ class ProfileHelp():
 		self.user.save()
 
 	def save_name(self):
-		cd = self.form.cleaned_data
-		self.user.companys.name= cd['name']
-		self.user.save()
+		self.form.save()
+		# cd = self.form.cleaned_data
+		# self.user.companys.name= cd['name']
+		# self.user.save()
 
 	def save_photo(self):
 		cd = self.form.cleaned_data

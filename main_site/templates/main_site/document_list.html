@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Документы</h1>
+<h2>Титульные листы для оформления практики</h2>
+
+<ul>
+	{% for doc in documents %}
+		<li style="list-style-type: none; margin-bottom: 50px">
+			<a class="file file-doc" href="{{doc.file.url }}"  style="font-size: 20px">{{doc.name}}</a>
+			<p style="margin-left: 25px">{{doc.description}}</p>
+
+
+		</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}

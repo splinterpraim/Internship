@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
 from django.conf import settings
-from .models import CustomUser, Student, Company, Resume, Vacancy, Review
+from .models import CustomUser, Student, Company, Resume, Vacancy, Review, Response, Document
 from .forms import (#ProfileCustomUserFrom,
 					#ProfileStudentFrom, 
 					#PROFILE
@@ -35,7 +35,10 @@ from .forms import (#ProfileCustomUserFrom,
 					MyVacancyChangeConditionsForm,
 					MyVacancyChangeSkillsForm,
 					#REVIEW
-					CreateReviewForm
+					CreateReviewForm,
+					#RESPONSE
+					CreateResponseForm,
+					StudentCreateResponseForm
 
 					)
 
@@ -49,7 +52,7 @@ from .my_features import ProfileHelp
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponseNotFound
-
+from django.db.models import Q 
 
 
 
@@ -81,6 +84,9 @@ class ProfileDetailView(LoginRequiredMixin,TemplateView):
 		return context
 
 
+@login_required
+def main_site(request):
+	return redirect('profile')
 
 ###################################################### RESUME ###################
 
@@ -126,7 +132,7 @@ class MyResumeDetailView(LoginRequiredMixin,DetailView):
 			raise Http404('Ох, нет объекта;)')
 		
 
-
+@login_required
 def my_resume_make_published(request,  pk, who):
 
 	resume = Resume.objects.get(id=pk)
@@ -137,12 +143,14 @@ def my_resume_make_published(request,  pk, who):
 	else:
 		return redirect('my_resume_detail',pk=pk)
 
+@login_required
 def my_resume_make_closed(request,  pk):
 	resume = Resume.objects.get(id=pk)
 	resume.status = 'closed'
 	resume.save()
 	return redirect('my_resume_detail',pk=pk)
 
+@login_required
 def my_resume_delete(request,  pk):
 	resume = Resume.objects.get(id=pk)
 	resume.delete()
@@ -253,7 +261,7 @@ class MyVacancyDetailView(LoginRequiredMixin,DetailView):
 		except ObjectDoesNotExist:
 			raise Http404('Ох, нет объекта;)')
 		
-
+@login_required
 def my_vacancy_make_published(request,  pk, who):
 
 	vacancy = Vacancy.objects.get(id=pk)
@@ -264,6 +272,7 @@ def my_vacancy_make_published(request,  pk, who):
 	else:
 		return redirect('my_vacancy_detail',pk=pk)
 
+@login_required
 def my_vacancy_make_closed(request,  pk):
 	vacancy = Vacancy.objects.get(id=pk)
 	vacancy.status = 'closed'
@@ -441,6 +450,22 @@ def profile_change_photo(request):
 	obj_profile.add_context(context)
 	return obj_profile.main()
 
+@login_required
+def profile_change_photo_new(request):
+	if request.method == "POST":
+		form = ProfileChangePhotoFrom(request.POST, request.FILES)
+		if form.is_valid():
+			form.save()
+			return redirect("success")
+	else:
+		form = ProfileChangePhotoFrom()
+	p = Company.objects.last()
+	return render(request, "main_site/profile/profile_change_username.html", {"form": form, "p": p})
+
+
+def success(request):
+    return HttpResponse("Successfully uploaded")
+
 
 @login_required
 def profile_change_description(request):
@@ -503,9 +528,290 @@ def profile_change_phone(request):
 	return obj_profile.main()
 
 
-########################################################################################
+###############################################################################################
 
-####################################################################################
+################################################### SEARCH #################################
+
+
+
+class ResumeListView(LoginRequiredMixin,ListView):
+	model = Resume
+	template_name = 'main_site/resume/resume_list.html'
+	context_object_name = 'resumes'
+
+	def get_queryset(self):
+		queryset = Resume.objects.filter(status='published',).order_by('-updated_by').all()
+		query = self.request.GET.get('search')
+		if query:
+			queryset = Resume.objects.filter(status='published',).filter(Q(name__icontains=query) | Q(skills__name__icontains=query)).distinct().order_by('-updated_by').all()
+		if not self.request.GET.get('filter_clance'):
+			filter_data = self.request.GET.get('filter')
+			if filter_data:
+				queryset = queryset.order_by(filter_data)
+		return queryset
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["section"] = 'resume_list'
+		search_value = self.request.GET.get('search')
+		if not search_value:
+			search_value = ''
+		context['search_value'] = search_value 
+		context['filter'] = self.request.GET.get('filter')
+		return context
+
+class ResumeDetailView(LoginRequiredMixin,DetailView):
+	model = Resume
+	template_name = 'main_site/resume/resume_detail.html'
+	context_object_name = 'resume'
+
+	def get_object(self, queryset=None):
+		pk = self.kwargs.get('pk')
+		try:
+			return Resume.objects.filter(status='published').get(id=pk)
+		except ObjectDoesNotExist:
+			raise Http404('Ох, нет объекта;)')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		responses = dict()
+		responses['offer'] = Response.objects.filter(vacancy__company=self.request.user.companys).filter(resume__id=self.kwargs.get('pk')).filter(status='offer')
+		responses['student_response'] = Response.objects.filter(vacancy__company=self.request.user.companys).filter(resume__id=self.kwargs.get('pk')).filter(status='student_response')
+		responses['reject'] = Response.objects.filter(vacancy__company=self.request.user.companys).filter(resume__id=self.kwargs.get('pk')).filter(status='reject')
+		responses['offer_completed'] = Response.objects.filter(vacancy__company=self.request.user.companys).filter(resume__id=self.kwargs.get('pk')).filter(status='offer_completed')
+		context["responses"] = responses
+		return context
+
+
+class VacancyListView(LoginRequiredMixin,ListView):
+	model = Vacancy
+	template_name = 'main_site/vacancy/vacancy_list.html'
+	context_object_name = 'vacancys'
+
+	def get_queryset(self):
+		queryset = Vacancy.objects.filter(status='published',).order_by('-updated_by').all()
+		query = self.request.GET.get('search')
+		if query:
+			queryset = Vacancy.objects.filter(status='published',).filter(Q(name__icontains=query) | Q(skills__name__icontains=query)).distinct().order_by('-updated_by').all()
+		if not self.request.GET.get('filter_clance'):
+			filter_data = self.request.GET.get('filter')
+			if filter_data:
+				queryset = queryset.order_by(filter_data)
+		return queryset
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["section"] = 'vacancy_list'
+		search_value = self.request.GET.get('search')
+		if not search_value:
+			search_value = ''
+		context['search_value'] = search_value 
+		context['filter'] = self.request.GET.get('filter')
+		return context
+
+class VacancyDetailView(LoginRequiredMixin,DetailView):
+	model = Vacancy
+	template_name = 'main_site/vacancy/vacancy_detail.html'
+	context_object_name = 'vacancy'
+
+	def get_object(self, queryset=None):
+		pk = self.kwargs.get('pk')
+		try:
+			return Vacancy.objects.filter(status='published').get(id=pk)
+		except ObjectDoesNotExist:
+			raise Http404('Ох, нет объекта;)')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		responses = dict()
+		responses['offer'] = Response.objects.filter(resume__student=self.request.user.students).filter(vacancy__id=self.kwargs.get('pk')).filter(status='offer')
+		responses['student_response'] = Response.objects.filter(resume__student=self.request.user.students).filter(vacancy__id=self.kwargs.get('pk')).filter(status='student_response')
+		responses['reject'] = Response.objects.filter(resume__student=self.request.user.students).filter(vacancy__id=self.kwargs.get('pk')).filter(status='reject')
+		responses['offer_completed'] = Response.objects.filter(resume__student=self.request.user.students).filter(vacancy__id=self.kwargs.get('pk')).filter(status='offer_completed')
+		context["responses"] = responses
+		return context
+
+
+################################################### Response ##############################
+
+class CreateResponseView(LoginRequiredMixin,CreateView):
+	
+	model = Response
+	form_class = CreateResponseForm
+	template_name = 'main_site/response/create_response.html'
+	empty_field_vacancy = False
+
+	def form_valid(self, form):
+
+		form.instance.resume = Resume.objects.get(id=self.kwargs.get('pk'))  
+		form.instance.status = 'offer'
+		return super().form_valid(form)
+
+	def get_company(self):
+		return self.request.user.companys
+
+	
+	def get_form(self, *args, **kwargs):
+		form = super(CreateResponseView, self).get_form(*args, **kwargs)
+		form.fields['vacancy'].queryset = Vacancy.objects.filter(company=self.get_company()).filter(status='published').exclude(responses__resume__id=self.kwargs.get('pk'))
+		if not form.fields['vacancy'].queryset:
+			self.empty_field_vacancy = True
+		return form
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["section"] = 'create_response'
+		context["resume"] = Resume.objects.get(id=self.kwargs.get('pk')) 
+		if self.empty_field_vacancy:
+			context["empty_field_vacancy"] = self.empty_field_vacancy
+		return context
+
+
+
+class CompanyResponseListView(LoginRequiredMixin,ListView):
+	model = Response
+	template_name = 'main_site/response/company_response_list.html'
+	context_object_name = 'responses'
+	ordering = ['status']
+	def get_queryset(self):
+		
+		ordering = self.request.GET.get('filter')
+		if not ordering:
+			ordering = 'updated_by'
+		queryset = Response.objects.filter(vacancy__company=self.request.user.companys).order_by(ordering)
+		return queryset
+
+	def get_ordering(self):
+		ordering = self.request.GET.get('filter')
+		print("d")
+		return ordering
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["section"] = 'company_response_list'
+		context["filter"] = self.request.GET.get('filter')
+
+		return context
+
+
+class CompanyResponseDetailView(LoginRequiredMixin,DetailView):
+	model = Response
+	template_name = 'main_site/response/company_response_detail.html'
+	context_object_name = 'response'
+
+	def get_object(self, queryset=None):
+		pk = self.kwargs.get('pk')
+		try:
+			return Response.objects.filter(vacancy__company=self.request.user.companys).get(id=pk)
+		except ObjectDoesNotExist:
+			raise Http404('Ох, нет объекта;)')
+
+
+
+@login_required
+def company_make_offer(request, pk): 
+	response = Response.objects.get(id=pk)
+	response.status = 'offer'
+	response.save()
+	return redirect('company_response_detail', pk=pk)
+
+@login_required
+def company_make_reject(request, pk):
+	response = Response.objects.get(id=pk)
+	response.status = 'reject'
+	response.save()
+	return redirect('company_response_detail', pk=pk)
+
+@login_required
+def company_make_offer_completed(request, pk):
+	response = Response.objects.get(id=pk)
+	response.status = 'offer_completed'
+	response.save()
+	return redirect('company_response_detail', pk=pk)
+
+
+class StudentCreateResponseView(LoginRequiredMixin,CreateView):
+	
+	model = Response
+	form_class = StudentCreateResponseForm
+	template_name = 'main_site/response/student_response.html'
+	empty_field_resume = False
+
+	def form_valid(self, form):
+		form.instance.vacancy = Vacancy.objects.get(id=self.kwargs.get('pk'))  
+		form.instance.status = 'student_response'
+		return super().form_valid(form)
+
+	def get_student(self):
+		return self.request.user.students
+
+	def get_form(self, *args, **kwargs):
+		form = super(StudentCreateResponseView, self).get_form(*args, **kwargs)
+		form.fields['resume'].queryset = Resume.objects.filter(student=self.get_student()).filter(status='published').exclude(responses__vacancy__id=self.kwargs.get('pk'))
+		if not form.fields['resume'].queryset:
+			self.empty_field_resume = True
+		return form
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["section"] = 'student_response'
+		context["vacancy"] = Vacancy.objects.get(id=self.kwargs.get('pk')) 
+		if self.empty_field_resume:
+			context["empty_field_resume"] = self.empty_field_resume
+		return context
+
+
+class StudentResponseListView(LoginRequiredMixin,ListView):
+	model = Response
+	template_name = 'main_site/response/student_response_list.html'
+	context_object_name = 'responses'
+	ordering = ['status']
+
+	def get_queryset(self):
+		ordering = self.request.GET.get('filter')
+		if not ordering:
+			ordering = '-updated_by'
+		queryset = Response.objects.filter(resume__student=self.request.user.students).order_by(ordering)
+		return queryset
+# вроде не нужно
+	def get_ordering(self):
+		ordering = self.request.GET.get('filter')
+		return ordering
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["section"] = 'student_response_list'
+		context["filter"] = self.request.GET.get('filter')
+
+		return context
+
+
+class StudentResponseDetailView(LoginRequiredMixin,DetailView):
+	model = Response
+	template_name = 'main_site/response/student_response_detail.html'
+	context_object_name = 'response'
+
+	def get_object(self, queryset=None):
+		pk = self.kwargs.get('pk')
+		try:
+			return Response.objects.filter(resume__student=self.request.user.students).get(id=pk)
+		except ObjectDoesNotExist:
+			raise Http404('Ох, нет объекта;)')
+
+
+################################### DOCUMENT ###########################
+
+class DocumentListView(LoginRequiredMixin,ListView):
+	model = Document
+	template_name = 'main_site/document_list.html'
+	context_object_name = 'documents'
+
+
+
+
+
+
+##############################################################
 	# Create your views here.
 
 

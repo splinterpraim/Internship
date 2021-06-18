@@ -1,8 +1,8 @@
 
 <span class="logo">Site</span>
 <ul class="menu" >
-	<li {% if section == "e" %} class="selected" {% endif %}>
-		<a href="{% url 'profile' %}">Поиск вакансий</a>
+	<li {% if section == "vacancy_list" %} class="selected" {% endif %}>
+		<a href="{% url 'vacancy_list' %}">Поиск вакансий</a>
 	</li>
 				
 	<li {% if section == "my_resume_list" %} class="selected" {% endif %}>
@@ -13,8 +13,11 @@
 		<a href="{% url 'my_review_list' %}">Мои отзывы</a>
 	</li>
 
-	<li {% if section == "response_list_student" %} class="selected" {% endif %}>
-		<a href="{ url 'response_list_student' }">Отклики</a>
+	<li {% if section == "student_response_list" %} class="selected" {% endif %}>
+		<a href="{% url 'student_response_list' %}">Отклики</a>
+	</li>
+	<li {% if section == "document_list" %} class="selected" {% endif %}>
+		<a href="{% url 'document_list' %}">Документы</a>
 	</li>
 
 </ul>

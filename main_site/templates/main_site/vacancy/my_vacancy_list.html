@@ -17,7 +17,7 @@
 				
 				{% if vacancy.status == 'published' %}
 				<span style="color: #a757f7">Опубликованно</span>
-				<p>Видно всем студентам <a href="">прямая ссылка</a></p>
+				<p>Видно всем студентам</p>
 				{% else %}
 				<span style="color: #ff7575">Неопубликованно</span>
 				<p>Не видно никому <a href="{% url 'my_vacancy_make_published' vacancy.id 1 %}" class="button-mini">Сделать видимым</a></p>

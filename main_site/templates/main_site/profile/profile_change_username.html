@@ -1,7 +1,7 @@
-<!-- {% extends 'main_site/profile/profile.html'%}
+{% extends 'base.html'%}
 
 
-{% block username %}
+{% block content %}
 <div class="row mb p-3 profile-info-change">
 	{{error}}
 	<form action="", method="post">
@@ -11,5 +11,5 @@
 		<a   href="{% url 'profile' %}" class="cancel">отменить</a>
 	</form>
 </div>
+<div>{{p.photo.name}}</div>
 {% endblock %}
- -->

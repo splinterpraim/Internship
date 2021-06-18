@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Вакансия - VACANCY-{{vacancy.id}}{% endblock %}
+{% block content %}
+{% if vacancy.status == 'blocked' %}
+	<div style="color: #ff7575; margin-left: 25%; font-size: 35px"><--Резюме заблокированно!--></div>
+{% else %}
+
+	<div class="row mb p-3 profile-info-top" style="width: 70%; margin-left: 15%"> 
+		<div class="col-8" style="border-right:1px solid">
+
+			<div class="" style="margin-bottom: 20px">
+				<span style="font-size: 30px; padding-right: 20px ">{{vacancy.name}}</span>
+				
+			</div>
+			<div class="" style="margin-bottom: 30px">
+				<span style="">Компания</span>
+				
+				<a href="">{{vacancy.company}}</a>
+			</div>
+			
+			<div class="" style="margin-bottom: 30px">
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Описание</span>
+				<div style=" ">{{vacancy.description}}</div>
+			</div>
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Обязанности</span>
+				<div style=" ">{{vacancy.responsibilities}}</div>
+			</div>
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Требования</span>
+				<div style=" ">{{vacancy.requirements}}</div>
+			</div>
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Условия</span>
+				<div style=" ">{{vacancy.conditions}}</div>
+			</div>
+			<div class="" style="margin-bottom: 30px">
+				
+				<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Навыки</span>
+				<div style="margin-top: 15px">
+					{% for i in vacancy.skills.all %}
+					<span style="padding: 5px 10px;margin-right: 5px; background: #c7c5c7;">
+						{{i.name}}
+					</span>
+					{% endfor %}
+
+				</div>
+			</div>
+			<div class="" style="margin-bottom: 30px">
+				<div style="color: #b0aeb0;">{{vacancy.updated_by}}</div>
+			</div>
+			
+		</div>
+
+		<div class="col-4">
+			<div class="" style="margin-bottom: 30px">
+				
+				<div style="font-size: 20px; color: #000; padding-right: 20px; ">
+					Действия
+				</div>
+
+					<div style=" margin-bottom: 20px; margin-top: 10px">
+						Если вам подходит эта вакансия, вы можете откликнутся на нее 
+					</div>
+					<a href="{% url 'student_response' vacancy.id  %}" class="button-mini" style="background-color: #a757f7">Откликнутся</a>
+				<div style="font-size: 20px; color: #000; padding-right: 20px; margin-top: 20px ">
+					
+				</div>
+
+				{% if responses  %} <!-- если вы сделали предложение -->
+
+					{% if responses.offer %}
+					
+						<span style="color: #ff7575">Сделанные предложения</span>
+						<div style=" margin-bottom: 20px; margin-top: 10px">
+							Вам уже сделали предложение на эту вакансию
+						</div>
+						{% for response in responses.offer %}
+						<div>
+							 -> по резюме "<a href="{% url 'my_resume_detail' response.resume.id %}">{{response.resume.name}}</a>"  
+							 <div style="margin-left: 20px">(см. <a href="{ url response.id }">Отклик</a>)</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+
+					{% if responses.student_response %}
+						<span style="color: #ff7575">Совершенный отклик</span>
+						<div style=" margin-bottom: 20px; margin-top: 10px">
+							Вы уже сделали отклик на эту вакансию  
+						</div>
+						{% for response in responses.student_response %}
+						<div>
+							 -> по резюме "<a href="{% url 'my_resume_detail' response.resume.id %}">{{response.resume.name}}</a>"  
+							 <div style="margin-left: 20px">(см. <a href="{ url response.id }">Отклик</a>)</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+
+					{% if responses.offer_completed %}
+						<span style="color: #ff7575">Завершенно</span>
+						<div style=" margin-bottom: 20px; margin-top: 10px">
+							Вы  уже проходил стажировку  по этой вакансии
+						</div>
+						{% for response in responses.offer_completed %}
+						<div>
+							 -> резюме "<a href="{% url 'my_resume_detail' response.resume.id %}">{{response.resume.name}}</a>"  
+							 <div style="margin-left: 20px">(см. <a href="{ url response.id }">Отклик</a>)</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+
+					{% if responses.reject %}
+						<span style="color: #ff7575">Отказ</span>
+						<div style=" margin-bottom: 20px; margin-top: 10px">
+							Вам уже отазали по этой вакансии  
+						</div>
+						{% for response in responses.reject %}
+						<div>
+							 -> на резюме "<a href="{% url 'my_resume_detail' response.resume.id %}">{{response.resume.name}}</a>"  
+							 <div style="margin-left: 20px">(см. <a href="{ url response.id }">Отклик</a>)</div>
+						</div>
+						{% endfor %}
+					{% endif %}
+
+						
+					
+				{% endif %}
+					
+				
+
+			</div>
+
+			
+		</div>
+
+			
+	</div>
+
+	
+	
+	
+{% endif %}
+<!-- </div> -->
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Отклики{% endblock %}
+{% block content %}
+
+<div class="form-outside">
+	{% if empty_field_vacancy %}
+	<h2 class="form-head">Это резюме уже связано со всеми вашими вакансиями, вы не можете предложить больше</h2>
+	<div  class="form-middleside" >
+		Можeте вернутся к резюме 
+		"<a href="{% url 'resume_detail' resume.id %}">{{resume.name}} (RESUME-{{resume.id}})</a>"
+	</div>
+	{% else %}
+	<h2 class="form-head">Предложение</h2>
+
+	<div class="form-middleside" style="margin-left: 50px">
+		<div style="margin-bottom: 20px"> Для Rезюме <a href="{% url 'resume_detail' resume.id %}">{{resume.name}}</a></div>
+
+	<form method="post">{% csrf_token %}
+	    {{ form.as_p }}
+	    <input type="submit" value="Сделать предложение">
+	</form>
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

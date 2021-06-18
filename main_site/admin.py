@@ -37,8 +37,6 @@ class CustomUserAdmin(UserAdmin):
          ),
     )
 
-    
-
 	#exclude = ('group','user_permissions','first_name','last_name')
 	list_per_page = 20
 	def student_link(self,obj):

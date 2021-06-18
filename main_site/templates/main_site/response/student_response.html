@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Отклики{% endblock %}
+{% block content %}
+
+<div class="form-outside">
+	{% if empty_field_resume %}
+	<h2 class="form-head">Эта вакансия уже связана со всеми вашими резюме, вы не можете откликнутся больше</h2>
+	<div  class="form-middleside" >
+		Можeте вернутся к вакансии 
+		"<a href="{% url 'vacancy_detail' vacancy.id %}">{{vacancy.name}}</a>"
+	</div>
+	<div  class="form-middleside" >
+		Или создать новое резюме 
+		"<a href="{% url 'create_resume' %}">Создать резюме</a>"
+	</div>
+	{% else %}
+	<h2 class="form-head">Отклик</h2>
+
+	<div class="form-middleside" style="margin-left: 50px">
+		<div style="margin-bottom: 20px"> На Вакансию <a href="{% url 'vacancy_detail' vacancy.id %}">{{vacancy.name}}</a></div>
+
+	<form method="post">{% csrf_token %}
+	    {{ form.as_p }}
+	    <input type="submit" value="Откликнутся">
+	</form>
+	</div>
+	{% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Поиск Резюме{% endblock %}
+{% block content %}
+<h1 class="search">Поиск Резюме</h1>
+<div style="">
+	<div class="d1">
+	  	<form method="get">
+		  <input name="search" type="text" placeholder="Профессия, навык" value="{{search_value}}">
+		  <button type="submit"></button>
+		</form>
+	</div>
+
+	
+	<div class="row mb p-3">
+		<div class="col-1" style="width: 25%; background-color: #e6e8e8;margin-left: 20px; height: 300px">
+			<div style="text-align: center;margin-top: 10px;font-size: 20px">Фильтры</div>
+			<form method="get">
+				<input type="hidden" name="search" value="{{search_value}}">
+				<div style="margin-bottom: 20px; border-bottom: 2px solid #d2d6d6">
+					<div style="font-size: 18px">Дата</div>
+					<div style="margin-left: 20px">
+						<button class="filters {% if filter == 'updated_by' %}selected_filter{% endif %}" type="submit" name="filter" value="updated_by" >
+						 по возрастанию 
+						</button>
+					</div>
+					<div style="margin-left: 20px">
+						<button class="filters {% if filter == '-updated_by' %}selected_filter{% endif %}" type="submit" name="filter" value="-updated_by" >
+						 по убыванию
+						</button>
+					</div>
+				</div>
+
+				<div style="margin-bottom: 20px;border-bottom: 2px solid #d2d6d6">
+					<div style="font-size: 18px">Название</div>
+					<div style="margin-left: 20px">
+						<button class="filters {% if filter == 'name' %}selected_filter{% endif %}" type="submit" name="filter" value="name" >
+						 по возрастанию
+						</button>
+					</div>
+					<div style="margin-left: 20px">
+						<button class="filters {% if filter == '-name' %}selected_filter{% endif %}" type="submit" name="filter" value="-name" >
+						 по убыванию
+						</button>
+					</div>
+				</div>
+				{% if filter %}
+					
+					<button class="filter_clance" type="submit" name="filter_clance" value="true"> сбросить фильтры</button>
+				{% endif %}
+			</form>
+		</div>
+
+		<div class="col">
+			{% if not resumes  %}
+			<span style="color: #000; margin-left: 10%; margin-right: 20px; font-size: 25px">
+				По запросу «{{search_value}}» ничего не найдено
+			</span>
+			{% endif %}
+			<ul>
+			{% for resume in resumes %}
+				<li style="list-style-type: none;">
+					<div class="row mb p-3 profile-info-top" style="width: 70%; border: 1px #e8e8e8 solid">
+						<a href="{% url 'resume_detail' resume.id %}" style="font-size: 25px">
+						{{resume.name}} </a><span style="font-size: 20px;color: #a757f7">(RESUME-{{resume.id}})</span>
+						<div style="">
+						<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Достижения</span> 
+						<div>{{resume.achievements}}</div>
+						</div>
+
+						<div class="" style="margin-bottom: 30px">
+							<span style="font-size: 20px; color: #b0aeb0; padding-right: 20px ">Навыки</span>
+							<div style="margin-top: 15px">
+								{% for i in resume.skills.all %}
+								<span style="padding: 5px 10px;margin-right: 5px; background: #c7c5c7;">
+									{{i.name}}
+								</span>
+								{% endfor %}
+
+							</div>
+						</div>
+						<p style="font-size: 15px"><i>Опубликовано {{resume.updated_by | date:"j F, Y"}}</i></p>
+					</div>
+				</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endblock %}

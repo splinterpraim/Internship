@@ -1,16 +1,19 @@
 
 <span class="logo">Site</span>
 <ul class="menu" >
-	<li {% if section == "e" %} class="selected" {% endif %}>
-		<a href="{% url 'profile' %}">Поиск резюме</a>
+	<li {% if section == "resume_list" %} class="selected" {% endif %}>
+		<a href="{% url 'resume_list' %}">Поиск резюме</a>
 	</li>
 				
 	<li {% if section == "my_vacancy_list" %} class="selected" {% endif %}>
 		<a href="{% url 'my_vacancy_list' %}">Мои вакансии</a>
 	</li>
 
-	<li {% if section == "response_list_student" %} class="selected" {% endif %}>
-		<a href="{ url 'response_list_student' }">Отклики</a>
+	<li {% if section == "company_response_list" %} class="selected" {% endif %}>
+		<a href="{% url 'company_response_list' %}">Отклики</a>
+	</li>
+	<li {% if section == "document_list" %} class="selected" {% endif %}>
+		<a href="{% url 'document_list' %}">Документы</a>
 	</li>
 
 </ul>

@@ -1,4 +1,4 @@
-from django.forms import models
+from django.forms import models, ValidationError
 from django.forms import (ModelForm,
 						  TextInput, 
 						  Textarea,
@@ -6,8 +6,8 @@ from django.forms import (ModelForm,
 						  SelectMultiple, 
 						  RadioSelect, CheckboxSelectMultiple, Select, CheckboxInput,)
 
-from .models import CustomUser, Student, Company, Resume, Vacancy,  Review
-
+from .models import CustomUser, Student, Company, Resume, Vacancy,  Review, Response
+from PIL import Image
 # class ProfileCustomUserFrom(models.ModelForm):
 	
 # 	class Meta:
@@ -155,7 +155,32 @@ class CreateReviewForm(ModelForm):
 			
 		}
 
-		
+################################################## RESPONSE ########################
+
+
+class CreateResponseForm(ModelForm):
+	class Meta:
+		model = Response
+		fields = ['vacancy']
+		widgets = {
+			# 'text': Textarea(attrs={'cols': 50, 'rows': 10, 'placeholder': 'Текст вашего отзыва','style':'background-color: white;'}),
+			}
+		help_texts = {
+			'vacancy': 'Выберите вакансию',
+			
+		}
+class StudentCreateResponseForm(ModelForm):
+	class Meta:
+		model = Response
+		fields = ['resume']
+		widgets = {
+			# 'text': Textarea(attrs={'cols': 50, 'rows': 10, 'placeholder': 'Текст вашего отзыва','style':'background-color: white;'}),
+			}
+		help_texts = {
+			'resume': 'Выберите резюме',
+			
+		}
+
 
 	
 
@@ -183,6 +208,7 @@ class ProfileStudentChangePhoneFrom(ModelForm):
 	class Meta:
 		model = Student
 		fields = ('phone',)
+
 	def get_func_name(self):
 		return 'save_phone'
 
@@ -204,9 +230,25 @@ class ProfileChangeNameFrom(ModelForm):
 		return 'save_name'
 
 class ProfileChangePhotoFrom(ModelForm):
+	MIN_RESOLUTION = (400,400)
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args,**kwargs)
+		self.fields['photo'].help_text = 'Загрузите изображение с минимальным расширением {}x{}'.format(self.MIN_RESOLUTION[0],self.MIN_RESOLUTION[1])
+
 	class Meta:
 		model = Company
 		fields = ('photo',)
+		
+	# def clean_photo(self):
+	# 	photo = self.cleaned_data['photo']
+	# 	img = Image.open(photo)
+	# 	print(img.width,img.height)
+	# 	min_width, min_height = self.MIN_RESOLUTION
+	# 	if img.height < min_height or img.width < min_width:
+	# 		raise ValidationError('Разрешение изображения меньше минимального!')
+	# 	return photo
+
 	def get_func_name(self):
 		return 'save_photo'
 

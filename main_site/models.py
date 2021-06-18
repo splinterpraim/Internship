@@ -56,7 +56,7 @@ class Company(models.Model):
 	name = models.CharField('Название',max_length=200)
 	address = models.CharField('Адрес',max_length=200)
 	description = models.TextField('Описание')
-	photo = models.ImageField('Фото',blank=True)#upload_to
+	photo = models.ImageField('Фото',upload_to='img',blank=True)#upload_to
 	phone = models.CharField('Телефон',max_length=12, default=' ')
 	site_name = models.CharField('Сайт',max_length=200)
 	#mail, login, password, date_create,
@@ -146,9 +146,11 @@ class Resume(models.Model):
 	def get_absolute_url(self): 
 		return reverse('my_resume_detail', args=[str(self.id)]) 
 
+
 	class Meta:
 		verbose_name = 'Резюме'
 		verbose_name_plural = 'Резюме'
+        
 
 
 
@@ -169,15 +171,20 @@ class Response(models.Model):
 	def __str__(self):
 		return f'{self.vacancy} <--> {self.resume}'
 
+	def get_absolute_url(self): 
+		return reverse('profile') 
+
+
 	class Meta:
 		verbose_name = 'Отклик'
 		verbose_name_plural = 'Отклики'
+		unique_together = ('resume', 'vacancy')
 
 
 class Document(models.Model):
 	name = models.CharField('Название',max_length=100,unique=True)
-	file = models.FileField('Файл')
-
+	file = models.FileField('Файл',upload_to='document')
+	description = models.TextField('Описание', default='')
 	def __str__(self):
 		return self.name
 

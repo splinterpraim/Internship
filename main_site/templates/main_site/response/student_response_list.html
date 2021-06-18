@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Отклики и приглашения{% endblock %}
+{% block content %}
+<h1>Отклики и приглашения</h1>
+<div style="">
+	{% if not responses  %}
+	<span style="color: #000; margin-left: 25%; margin-right: 20px; font-size: 25px">У вас еще нет откликов или придложений! --></span>
+		<a href="{% url 'vacancy_list' %}">Поиск вакансий</a>
+	{% endif %}
+	
+	<ul>
+		<li style="list-style-type: none;">
+			<div class="row mb p-3 profile-info" style="width: 70%; margin-left: 15%">
+
+				<div class="col-3" style="color: #b0aeb0" >
+					{% if filter == "-status" %}
+					<a href="{% url 'student_response_list' %}?filter=status" style="color: #b0aeb0;border-bottom: 1px dashed #b0aeb0;" class="" > Статус</a><span> ↑ </span>
+					{% elif filter == 'status' %}
+					<a href="{% url 'student_response_list' %}?filter=-status" style="color: #b0aeb0;border-bottom: 1px dashed #b0aeb0;" class="" > Статус</a><span> ↓ </span>
+					{% else %}
+					<a href="{% url 'student_response_list' %}?filter=-status" style="color: #b0aeb0;border-bottom: 1px dashed #b0aeb0;" class="" > Статус</a>
+					{% endif %}
+					
+				</div>
+				<div class="col-3" style="color: #b0aeb0">
+					Резюме
+				</div> 
+				<div class="col-3" style="color: #b0aeb0">
+					Вакансия
+				</div> 
+				<div class="col-3" style="color: #b0aeb0">
+					{% if filter == "updated_by" %}
+					<a href="{% url 'student_response_list' %}?filter=-updated_by" style="color: #b0aeb0;border-bottom: 1px dashed #b0aeb0;" class="" > Дата</a><span> ↓ </span>
+					{% elif filter == '-updated_by' %}
+					<a href="{% url 'student_response_list' %}?filter=updated_by" style="color: #b0aeb0;border-bottom: 1px dashed #b0aeb0;" class="" > Дата</a><span> ↑ </span>
+					{% else %}
+					<a href="{% url 'student_response_list' %}?filter=updated_by" style="color: #b0aeb0;border-bottom: 1px dashed #b0aeb0;" class="" > Дата</a>
+					{% endif %}
+					
+				</div> 
+			</div>
+		</li>
+	{% for response in responses %}
+		<li style="list-style-type: none;">
+
+			<div class="row mb p-3 profile-info-top response" style="width: 70%; margin-left: 15%" onclick="location.href='{% url 'student_response_detail' response.id %}';">
+				
+				<div class="col-3 " >
+					{% if response.status == 'offer' %}
+					<span style="color: #a757f7">{{response.get_status_display}}</span>
+						
+					{% elif response.status == 'student_response' %}
+						<span style="color: #40c7be">{{response.get_status_display}}</span>
+						
+					{% elif response.status == 'offer_completed' %}
+					<span style="color: #7c9492">{{response.get_status_display}}</span>
+						
+					{% elif response.status == 'reject' %}
+						<span style="color: #ff7575">{{response.get_status_display}}</span>
+					
+					{% endif %}
+				</div>
+				<div class="col-3" >
+					<a href="{% url 'my_resume_detail' response.resume.id %}" >
+						{{response.resume.name}}
+					</a>
+
+				</div>
+				<div class="col-3 " >
+					<a href="{% url 'vacancy_detail' response.vacancy.id %}" >
+						{{response.vacancy.name}}
+					</a>
+
+				</div>
+				<div class="col-3 " >
+					<p style="font-size: 15px"><i>{{response.updated_by}}</i></p>
+				</div>
+
+
+			</div>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
+{% endblock %}

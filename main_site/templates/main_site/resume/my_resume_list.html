@@ -17,7 +17,7 @@
 				
 				{% if resume.status == 'published' %}
 				<span style="color: #a757f7">Опубликованно</span>
-				<p>Видно всем работодателям <a href="">прямая ссылка</a></p>
+				<p>Видно всем работодателям</p>
 				{% else %}
 				<span style="color: #ff7575">Неопубликованно</span>
 				<p>Не видно никому <a href="{% url 'my_resume_make_published' resume.id 1 %}" class="button-mini">Сделать видимым</a></p>

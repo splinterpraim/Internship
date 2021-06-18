@@ -15,8 +15,10 @@
 			{% include 'main_site/profile/profile_change_div.html' %}
 		{% else %}
 		<div class="row mb p-3 profile-info-top">
-			<div class="col-4 " >Фото</div>
-			<div class="col-6">{{company.photo}}</div>
+			<div class="col-3 " >Фото</div>
+			<div class="col-7">
+				<img src="{% if company.photo %}{{ company.photo.url }}{% endif %} " style="width: 300px;  margin-left: 0">
+			</div>
 			<div class="col"><a href="{% url 'profile_change_photo' %}">изменить</a></div>
 		</div>
 		{% endif %}
